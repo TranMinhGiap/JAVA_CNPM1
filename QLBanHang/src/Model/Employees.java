@@ -15,21 +15,25 @@ public class Employees {
     private String employeeAddress;
     private String employeePhone;
     private String employeeHometown;
+    private String employeeUser;
+    private String employeePass;
+    private String employeeRole;
 
     public Employees() {
-        this.employeeId = this.employeeName = this.employeeGender = this.employeeAddress = this.employeePhone = this.employeeHometown = this.employeeBirth = "";
     }
 
-    public Employees(String id, String name, String birth, String gender, String address, String phone, String hometown) {
-        this.employeeId = id;
-        this.employeeName = name;
-        this.employeeBirth = birth;
-        this.employeeGender = gender;
-        this.employeeAddress = address;
-        this.employeePhone = phone;
-        this.employeeHometown = hometown;
+    public Employees(String employeeId, String employeeName, String employeeBirth, String employeeGender, String employeeAddress, String employeePhone, String employeeHometown, String employeeUser, String employeePass, String employeeRole) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.employeeBirth = employeeBirth;
+        this.employeeGender = employeeGender;
+        this.employeeAddress = employeeAddress;
+        this.employeePhone = employeePhone;
+        this.employeeHometown = employeeHometown;
+        this.employeeUser = employeeUser;
+        this.employeePass = employeePass;
+        this.employeeRole = employeeRole;
     }
-
     public Employees(ResultSet rs) throws SQLException {
         this.employeeId = rs.getString(1);
         this.employeeName = rs.getString(2); 
@@ -38,6 +42,9 @@ public class Employees {
         this.employeeAddress = rs.getString(5); 
         this.employeePhone = rs.getString(6); 
         this.employeeHometown = rs.getString(7);
+        this.employeeUser = rs.getString(8);
+        this.employeePass = rs.getString(9);
+        this.employeeRole = rs.getString(10);
     }
 
     public String getEmployeeId() {
@@ -94,5 +101,26 @@ public class Employees {
 
     public void setEmployeeHometown(String employeeHometown) {
         this.employeeHometown = employeeHometown;
+    }
+       public String getEmployeeuser() {
+        return employeeUser;
+    }
+
+    public void setEmployeeuser(String employeeuser) {
+        this.employeeUser = employeeuser;
+    }
+
+    public String getEmployeepass() {
+        return employeePass;
+    }
+
+    public void setEmployeepass(String employeepass) {
+        this.employeePass = employeepass;
+    }
+       public String getEmployeeRole() {
+        return employeeRole;
+    }
+    public void setEmployeeRole(String employeeRole) {
+        this.employeeRole = employeeRole;
     }
 }

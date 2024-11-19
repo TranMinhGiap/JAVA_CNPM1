@@ -75,6 +75,7 @@ public class ShoppingCart extends javax.swing.JPanel {
         lblNumThanhToan = new javax.swing.JLabel();
         txtNumberSale = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(0, 255, 204));
 
@@ -214,6 +215,8 @@ public class ShoppingCart extends javax.swing.JPanel {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Chi Tiết Thanh Toán");
 
+        jLabel2.setText("jLabel2");
+
         javax.swing.GroupLayout pnPayShoppingCartLayout = new javax.swing.GroupLayout(pnPayShoppingCart);
         pnPayShoppingCart.setLayout(pnPayShoppingCartLayout);
         pnPayShoppingCartLayout.setHorizontalGroup(
@@ -229,18 +232,23 @@ public class ShoppingCart extends javax.swing.JPanel {
                         .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnPayShoppingCartLayout.createSequentialGroup()
                                 .addComponent(lblThanhTienThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(23, Short.MAX_VALUE))
+                                .addContainerGap(357, Short.MAX_VALUE))
                             .addGroup(pnPayShoppingCartLayout.createSequentialGroup()
                                 .addComponent(lblNumThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 23, Short.MAX_VALUE))))
+                                .addGap(0, 357, Short.MAX_VALUE))))
                     .addGroup(pnPayShoppingCartLayout.createSequentialGroup()
                         .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblSaleShoppingCart)
                             .addComponent(lblTongCongShoppingCart))
-                        .addGap(18, 18, 18)
-                        .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblTongTienBanDau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtNumberSale, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))
+                        .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnPayShoppingCartLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblTongTienBanDau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtNumberSale, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)))
+                            .addGroup(pnPayShoppingCartLayout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(jLabel2)))
                         .addContainerGap())
                     .addGroup(pnPayShoppingCartLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
@@ -264,7 +272,8 @@ public class ShoppingCart extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTongCongShoppingCart)
-                    .addComponent(lblTongTienBanDau))
+                    .addComponent(lblTongTienBanDau)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addGroup(pnPayShoppingCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSaleShoppingCart)
@@ -304,8 +313,8 @@ public class ShoppingCart extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnHeaderShoppingCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnCustomerShoppingCart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnPayShoppingCart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -317,6 +326,7 @@ public class ShoppingCart extends javax.swing.JPanel {
     private javax.swing.JButton btnHoanTatShoppingCart;
     private javax.swing.JButton btnHuyShoppingCart;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAddressCusShoppingCart;
     private javax.swing.JLabel lblHeaderShoppingCart;

@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Controller;
-
 import Model.Import;
+import View.frmMain;
 import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
         }
         return id+1;
     }
+    
 
     @Override
     public List<Import> getImport() {
@@ -103,7 +104,8 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
             pstm.setInt(1, ip.getImportID());
-            pstm.setString(2, ip.getEmployeesName());
+            System.out.println("Name " + frmMain.name_employee);
+            pstm.setString(2, frmMain.name_employee);
             pstm.setInt(3, ip.getNum());
             pstm.setString(4, ip.getImportDay());
             pstm.setFloat(5, ip.getTotal());

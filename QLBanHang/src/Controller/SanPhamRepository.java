@@ -158,13 +158,15 @@ public class SanPhamRepository implements ISanPhamRepository{
                 String name = rs.getString("SupplierName");
                 String address = rs.getString("SupplierAddress");
                 String phone = rs.getString("Phone");
-                lst.add(new Supplier(id, name, address, phone));
+                String status = rs.getString("Status");
+                lst.add(new Supplier(id, name, address, phone, status));
             }
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION getcomoboxSupplier in SanPhamRepository: " + ex.getMessage());
         }
         return lst;
     }
+    
     
     /*Category*/
     
@@ -218,7 +220,7 @@ public class SanPhamRepository implements ISanPhamRepository{
     
     @Override
     public boolean addSupplier(Supplier sp) {
-        String sql = "INSERT INTO Supplier VALUES (?,?,?,?)";
+        String sql = "INSERT INTO Supplier VALUES (?,?,?,?, ?)";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
@@ -226,6 +228,7 @@ public class SanPhamRepository implements ISanPhamRepository{
             pstm.setString(2, sp.getSupplierName());
             pstm.setString(3, sp.getAddress());
             pstm.setString(4, sp.getPhone());
+            pstm.setString(5, sp.getStatus());
             return pstm.executeUpdate() > 0;
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION addSupplier in SanPhamRepository: " + ex.getMessage());
@@ -235,14 +238,15 @@ public class SanPhamRepository implements ISanPhamRepository{
 
     @Override
     public boolean updateSupplier(Supplier sp) {
-        String sql = "UPDATE Supplier SET SupplierName = ?, SupplierAddress = ?, Phone = ? WHERE SupplierID = ?";
+        String sql = "UPDATE Supplier SET SupplierName = ?, SupplierAddress = ?, Phone = ?, Status = ? WHERE SupplierID = ?";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
             pstm.setString(1, sp.getSupplierName());
             pstm.setString(2, sp.getAddress());
             pstm.setString(3, sp.getPhone());
-            pstm.setString(4, sp.getSupplierID());
+            pstm.setString(4, sp.getStatus());
+            pstm.setString(5, sp.getSupplierID());
             return pstm.executeUpdate() > 0;
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION updateSupplier in SanPhamRepository: " + ex.getMessage());
@@ -252,11 +256,16 @@ public class SanPhamRepository implements ISanPhamRepository{
 
     @Override
     public boolean deleteSupplier(Supplier sp) {
-        String sql = "DELETE FROM Supplier WHERE SupplierID = ?";
+//        String sql = "DELETE FROM Supplier WHERE SupplierID = ?";
+        String sql = "UPDATE Supplier SET SupplierName = ?, SupplierAddress = ?, Phone = ?, Status = ? WHERE SupplierID = ?";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
-            pstm.setString(1, sp.getSupplierID());
+            pstm.setString(1, sp.getSupplierName());
+            pstm.setString(2, sp.getAddress());
+            pstm.setString(3, sp.getPhone());
+            pstm.setString(4, sp.getStatus());
+            pstm.setString(5, sp.getSupplierID());
             return pstm.executeUpdate() > 0;
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION deleteSupplier in SanPhamRepository: " + ex.getMessage());

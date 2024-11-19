@@ -4,6 +4,7 @@
  */
 package View;
 
+
 import Controller.SanPhamRepository;
 import Model.Category;
 import Model.Supplier;
@@ -19,7 +20,9 @@ public class frmAddProduct extends javax.swing.JFrame {
 
     /**
      * Creates new form frmAddProduct
+     * 
      */
+    frmMain frm = new frmMain();
     public frmAddProduct() {
         initComponents();
         loadComboboxCategory();
@@ -199,9 +202,18 @@ public class frmAddProduct extends javax.swing.JFrame {
     public void loadComboboxSupplier(){
         SanPhamRepository spReposytory = new SanPhamRepository();
         List<Supplier> lstSL = spReposytory.getcomboboxSupplier();
+        System.out.println("Size "+ lstSL.size());
         cbxNCC.removeAllItems();
-        for(int i = 0 ; i < lstSL.size() ; i++){
-            cbxNCC.addItem(lstSL.get(i));
+//        for(int i = 0 ; i < lstSL.size() ; i++){
+//            if(lstSL.get(i).getStatus().equals("Hợp tác")){
+//                cbxNCC.addItem(lstSL.get(i));
+//            }
+//        }
+        for(Supplier sup : lstSL){
+            if("Hợp tác".equals(sup.getStatus().trim())){
+                cbxNCC.addItem(sup);
+                System.out.println("Status" + sup.getStatus());
+            }
         }
     }
     public void loadComboboxCategory(){
@@ -221,6 +233,7 @@ public class frmAddProduct extends javax.swing.JFrame {
         String priceBan = txtGiaBan.getText();
         Category ctg = (Category)cbxLoaiSP.getSelectedItem();
         Supplier sup = (Supplier)cbxNCC.getSelectedItem();
+        System.out.println("NCC "+ sup.getSupplierID() + " Satus " + sup.getStatus());
         int num = 0;
 
         if(id.equals("") || name.equals("") || priceNhap.equals("") || priceBan.equals("")){
@@ -235,11 +248,11 @@ public class frmAddProduct extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "VALIDATE Price ! ");
                 return;
             }
-    
             Product pr = new Product(id, name, tmp1, tmp2, num, ctg.getCategoryID(), sup.getSupplierID());
             SanPhamRepository rp = new SanPhamRepository();
             if(rp.addProduct(pr)){
                 JOptionPane.showMessageDialog(this, "ADD Product SUCCESSFULL !");
+                frm.loadDSPhieuNhap();
             }
             else{
                 JOptionPane.showMessageDialog(this, "ADD Product Failed !");
@@ -248,6 +261,7 @@ public class frmAddProduct extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "VALIDATE Price ! " + ex.getMessage());
         }
+        
         this.dispose();
     }//GEN-LAST:event_btnThemSPActionPerformed
 

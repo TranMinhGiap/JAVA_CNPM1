@@ -15,18 +15,19 @@ public class Supplier {
     private String supplierName;
     private String address;
     private String phone;
-    
-    public Supplier(){
-        this.supplierID = this.supplierName = this.address = this.phone = "";
-    }
+    private String status;
 
-    public Supplier(String supplierID, String supplierName, String address, String phone) {
+    public Supplier(String supplierID, String supplierName, String address, String phone, String status) {
         this.supplierID = supplierID;
         this.supplierName = supplierName;
         this.address = address;
         this.phone = phone;
+        this.status = status;
     }
-
+    
+    public Supplier(){
+        this.supplierID = this.supplierName = this.address = this.phone = this.status = "";
+    }
     public String getSupplierID() {
         return supplierID;
     }
@@ -58,7 +59,13 @@ public class Supplier {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
     @Override
     public String toString() {
         return this.supplierName;
@@ -66,7 +73,7 @@ public class Supplier {
 
     @Override
     public int hashCode() {
-        return Objects.hash(supplierID, supplierName, address, phone);
+        return Objects.hash(supplierID, supplierName, address, phone, status);
     }
 
     @Override
@@ -90,6 +97,9 @@ public class Supplier {
         if (!Objects.equals(this.address, other.address)) {
             return false;
         }
-        return Objects.equals(this.phone, other.phone);
+        if(!Objects.equals(this.phone, other.phone)){
+            return false;
+        }
+        return Objects.equals(this.status, other.status);
     }
 }

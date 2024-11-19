@@ -6,27 +6,25 @@ package Controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-/**
- *
- * @author TRAN MINH GIAP
- */
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 public class Connect {
-    public static Connection getConnection(){
-        Connection conn = null;
+                 public static Connection conn = null;
+
+    public static Connection getConnection() throws SQLException{
         try {
+            String user = "sa";
+            String password = "123456";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=QLBanHang1;encrypt=false";
+            // Nạp trình điều khiển
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=QLBanHang;encrypt=true;trustServerCertificate=true", "sa", "15092004");
-            if(conn != null){
-                System.out.println("Database Connection " + conn.getCatalog() + " Successfull !");
-            }
-            else{
-                System.out.println("Database Connection Failed !");
-            }
-        } catch (Exception ex) {
-            System.out.println("ERROR DURING CONNECTION " + ex.getMessage());
-        } finally {
-            return conn;
+            // Thực hiện kết nối cơ sở dữ liệu
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.print("Kết nối thành công!");
+            return conn;          
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Kết nối cơ sở dữ liệu thất bại!", "Thông báo", 1);
         }
+        return null;
     }
 }

@@ -8,10 +8,6 @@ import Model.Employees;
 import java.util.List;
 import java.sql.*;
 import java.util.ArrayList;
-/**
- *
- * @author TRAN MINH GIAP
- */
 public class NhanVienRepository implements INhanVienRepository{
 
     @Override
@@ -33,7 +29,7 @@ public class NhanVienRepository implements INhanVienRepository{
     
     @Override
     public boolean addEmployees(Employees product) {
-        String sql = "INSERT INTO Employees VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Employees VALUES (?,?,?,?,?,?,?, ?, ?,?)";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql)
             ) 
@@ -45,6 +41,9 @@ public class NhanVienRepository implements INhanVienRepository{
             pstm.setString(5, product.getEmployeeAddress());
             pstm.setString(6, product.getEmployeePhone());
             pstm.setString(7, product.getEmployeeHometown());
+            pstm.setString(8, product.getEmployeeuser());
+            pstm.setString(9, Cipher.HashPassword(product.getEmployeepass()));
+            pstm.setString(10, product.getEmployeeRole());
             return pstm.executeUpdate() > 0;
             
         } catch (Exception ex) {
@@ -55,7 +54,7 @@ public class NhanVienRepository implements INhanVienRepository{
 
     @Override
     public boolean updateEmployees(Employees product) {
-        String sql = "UPDATE Employees SET EmployeesName = ?, Birth = ?, Gender = ?, EmployeesAddress = ?, Phone = ?, Hometown = ? WHERE EmployeesID = ?";
+        String sql = "UPDATE Employees SET EmployeesName = ?, Birth = ?, Gender = ?, EmployeesAddress = ?, Phone = ?, Hometown = ?, EmployeeUser = ?, EmployeePass = ?, EmployeeRole = ? WHERE EmployeesID = ?";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
@@ -65,7 +64,10 @@ public class NhanVienRepository implements INhanVienRepository{
             pstm.setString(4, product.getEmployeeAddress());
             pstm.setString(5, product.getEmployeePhone());
             pstm.setString(6, product.getEmployeeHometown());
-            pstm.setString(7, product.getEmployeeId());
+            pstm.setString(7, product.getEmployeeuser());
+            pstm.setString(8, product.getEmployeepass());
+            pstm.setString(9, product.getEmployeeRole());
+            pstm.setString(10, product.getEmployeeId());
             return pstm.executeUpdate() > 0;
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION updateEmployees in NhanVienRepository: " + ex.getMessage());
