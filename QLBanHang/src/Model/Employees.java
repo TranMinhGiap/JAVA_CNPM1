@@ -46,7 +46,10 @@ public class Employees {
         this.employeePass = rs.getString(9);
         this.employeeRole = rs.getString(10);
     }
-
+    public Employees(String Email,String pass){
+        this.employeeHometown = Email;
+        this.employeePass = pass;
+    }
     public String getEmployeeId() {
         return employeeId;
     }

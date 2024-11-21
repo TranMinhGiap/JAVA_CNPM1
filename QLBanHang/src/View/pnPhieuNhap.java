@@ -475,7 +475,7 @@ public class pnPhieuNhap extends javax.swing.JPanel {
         }
         /*Xử lý ngày*/
         String[] day1 = day.split("/");
-        String daySQL = day1[0] + "/" + day1[1] + "/" + day1[2];
+        String daySQL = day1[2] + "/" + day1[1] + "/" + day1[0];
         /*Xử Lý id Product*/
         String idpr = pr.getProductID();
         /*Lấy tên Category*/

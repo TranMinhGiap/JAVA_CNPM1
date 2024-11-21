@@ -89,4 +89,20 @@ public class NhanVienRepository implements INhanVienRepository{
             return false;
         }
     }
+
+    @Override
+    public boolean updateEmployeespass(Employees product) {
+        String sql = "UPDATE Employees SET EmployeePass = ? WHERE Hometown = ?";
+        try(Connection conn = Connect.getConnection();
+            PreparedStatement pstm = conn.prepareStatement(sql))
+        {
+            pstm.setString(1, product.getEmployeepass());
+            pstm.setString(2, product.getEmployeeHometown());
+            return pstm.executeUpdate() > 0;
+        } catch (Exception ex) {
+            System.out.println("ERROR IN FUNCTION updateEmployeesPass in NhanVienRepository: " + ex.getMessage());
+            return false;
+        }
+    }
+    
 }

@@ -7,12 +7,14 @@ package View;
 import Controller.Cipher;
 import Controller.KhachHangRepository;
 import Controller.NhanVienRepository;
+import Controller.PhieuBan;
 import Controller.QuanLyPhieuNhap;
 import Controller.SanPhamRepository;
 import Model.Category;
 import Model.Employees;
 import Model.Customer;
 import Model.Import;
+import Model.Order;
 import Model.Product;
 import Model.Supplier;
 import OTP.SendOTPEmail;
@@ -27,10 +29,13 @@ import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
@@ -54,9 +59,10 @@ public class frmMain extends javax.swing.JFrame {
     private List<Product> lstSanPhamBanBoLoc = new ArrayList<>();
     private static String role = "";
     public static String name_employee = "";
-    private static String id = "";
+    public static String id = "";
     Employees employee;
-    private static int Order_id = 1;
+    public static int Order_id = 1;
+    public static String OTP = "";
     
     public frmMain() {
         initComponents();
@@ -74,9 +80,13 @@ public class frmMain extends javax.swing.JFrame {
         loadDSPhieuNhap();
         loadCategorySP();
         loadSupplier();
-        loadDataSanPhamDangBan();
+//        loadDataSanPhamDangBan();
         loadorderDetail();
-
+//        CountIdOrder();
+        LoadHD();
+        lbPass.setVisible(false);
+        txtPass.setVisible(false);
+        btnOK.setVisible(false);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -187,7 +197,7 @@ public class frmMain extends javax.swing.JFrame {
         pnHeader = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        tbSPB = new javax.swing.JTable();
+        tbOrder = new javax.swing.JTable();
         pnTitleTable = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         lblSearchIDSP = new javax.swing.JLabel();
@@ -237,6 +247,13 @@ public class frmMain extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         jSeparator7 = new javax.swing.JSeparator();
         jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        txtOTP = new javax.swing.JTextField();
+        btnXacThuc = new javax.swing.JButton();
+        lbPass = new javax.swing.JLabel();
+        btnOTP = new javax.swing.JButton();
+        btnOK = new javax.swing.JButton();
+        txtPass = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
 
@@ -883,7 +900,7 @@ public class frmMain extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnQLSPNewLayout.createSequentialGroup()
                 .addComponent(lblHeaderQLSP)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 352, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 315, Short.MAX_VALUE)
                 .addComponent(pnToolQLSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnQLSPNewLayout.setVerticalGroup(
@@ -892,7 +909,7 @@ public class frmMain extends javax.swing.JFrame {
                 .addGroup(pnQLSPNewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnToolQLSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblHeaderQLSP, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                 .addGroup(pnQLSPNewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTimKiemSP)
                     .addComponent(txtTimKiemSP)
@@ -1208,6 +1225,11 @@ public class frmMain extends javax.swing.JFrame {
         });
 
         txtTimKiemDMSP.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtTimKiemDMSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTimKiemDMSPActionPerformed(evt);
+            }
+        });
         txtTimKiemDMSP.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtTimKiemDMSPKeyReleased(evt);
@@ -1426,27 +1448,35 @@ public class frmMain extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        tbSPB.setModel(new javax.swing.table.DefaultTableModel(
+        tbOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Mã SP", "Tên SP", "SL Còn Lại", "Giá Bán"
+                "Mã SP", "Tên Khách Hàng", "Tên Nhân Viên", "Giá", "Ngày mua"
             }
-        ));
-        tbSPB.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbSPBMouseClicked(evt);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
             }
         });
-        jScrollPane7.setViewportView(tbSPB);
+        tbOrder.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbOrderMouseClicked(evt);
+            }
+        });
+        jScrollPane7.setViewportView(tbOrder);
 
         pnTitleTable.setBackground(new java.awt.Color(0, 153, 0));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Danh Danh Sách Các Sản Phẩm Đang Bán");
+        jLabel6.setText("DANH SÁCH HÓA ĐƠN");
 
         javax.swing.GroupLayout pnTitleTableLayout = new javax.swing.GroupLayout(pnTitleTable);
         pnTitleTable.setLayout(pnTitleTableLayout);
@@ -1572,7 +1602,7 @@ public class frmMain extends javax.swing.JFrame {
         lblPhoneNV.setText("Phone");
 
         lblHomeTownNV.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblHomeTownNV.setText("HomeTown");
+        lblHomeTownNV.setText("Email");
 
         txtIDNV.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
 
@@ -1883,6 +1913,41 @@ public class frmMain extends javax.swing.JFrame {
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/email.png"))); // NOI18N
         jLabel15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setText("OTP");
+
+        txtOTP.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        btnXacThuc.setText("Xác thực");
+        btnXacThuc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXacThucActionPerformed(evt);
+            }
+        });
+
+        lbPass.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lbPass.setText("Pass");
+
+        btnOTP.setText("Gửi OTP");
+        btnOTP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOTPActionPerformed(evt);
+            }
+        });
+
+        btnOK.setText("OK");
+        btnOK.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOKActionPerformed(evt);
+            }
+        });
+
+        txtPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPassActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1892,15 +1957,34 @@ public class frmMain extends javax.swing.JFrame {
                 .addComponent(jLabel13)
                 .addGap(48, 48, 48))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(jLabel14))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
-                    .addComponent(jSeparator7)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel14))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnXacThuc)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel16)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtOTP, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnOTP)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                                        .addComponent(jSeparator7))))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnOK)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(lbPass)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1916,6 +2000,20 @@ public class frmMain extends javax.swing.JFrame {
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnOTP)
+                .addGap(5, 5, 5)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(txtOTP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnXacThuc)
+                .addGap(67, 67, 67)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbPass)
+                    .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(btnOK)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1967,7 +2065,7 @@ public class frmMain extends javax.swing.JFrame {
     }
     }
     public void loadDataNhanVien(){
-        String[] columnNames = {"ID", "NAME", "Birth", "Gender", "Address", "Phone", "Hometown", "User", "Password", "Role"};
+        String[] columnNames = {"ID", "NAME", "Birth", "Gender", "Address", "Phone", "Email", "User", "Password", "Role"};
         tbmNhanVien.setColumnIdentifiers(columnNames);
         NhanVienRepository nvRepository = new NhanVienRepository();
         try {
@@ -2032,6 +2130,30 @@ public class frmMain extends javax.swing.JFrame {
             System.out.println("ERROR FUNTION loadDSPhieuNhap ! " + ex.getMessage());
         }
     }
+    public void LoadHD(){
+        try{
+          PhieuBan pb = new PhieuBan();
+            DefaultTableModel model = (DefaultTableModel) tbOrder.getModel();
+            String[] columns = {"Order ID", "Customer Name", "Employee Name", "Order Date", "Total"};
+            model.setColumnIdentifiers(columns);
+            List<Order> orders = pb.DisplayHD();
+            for (Order order : orders) {
+            String customerName = pb.getCustomerName(order.getCustomID());
+            String employeeName = pb.getEmployeeName(order.getEmployeeID());
+            Object[] rowData = new Object[] {
+            order.getOrderID(), 
+            customerName, 
+            employeeName, 
+            order.getOrderDate(), 
+            order.getTotal()
+        };
+        model.addRow(rowData);
+        }  
+        }catch(Exception ex){
+            System.out.println("Lỗi select: " + ex.getMessage());
+        }
+        
+    }
     public void loadDataSanPhamDangBan(){
         String[] columnNames = {"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng Còn Lại", "Giá Bán"};
        tbmSanPhamDangBan.setColumnIdentifiers(columnNames);
@@ -2044,7 +2166,7 @@ public class frmMain extends javax.swing.JFrame {
                 lstSanPhamBanBoLoc.add(sp);
                 tbmSanPhamDangBan.addRow(new Object[]{sp.getProductID(), sp.getProductName(), sp.getQuantity(), sp.getProductPriceOut()});
             }
-            tbSPB.setModel(tbmSanPhamDangBan);
+            tbOrder.setModel(tbmSanPhamDangBan);
         } catch (Exception ex) {
             System.out.println("ERROR FUNTION loadDataSanPham ! " + ex.getMessage());
         }  
@@ -2131,16 +2253,17 @@ public class frmMain extends javax.swing.JFrame {
     }
     
     // Kiểm tra mật khẩu trống
-    if (txtPassword.getText().trim().isEmpty()) {
+    if (String.valueOf(txtPassword.getPassword()).trim().isEmpty()) {
         lbCheckPassword.setText("Vui lòng nhập mật khẩu");
         lbCheckPassword.setForeground(Color.red);
         return false;
     }
     
+//            System.out.println("Pass: " + Cipher.HashPassword(txtPassword.getText()));
     // Kiểm tra thông tin tài khoản và mật khẩu
     for (Employees employeey : employees) {
         if (txtUserName.getText().equals(employeey.getEmployeeuser()) && 
-            Cipher.HashPassword(txtPassword.getText()).equals(employeey.getEmployeepass())) {
+            Cipher.HashPassword(String.valueOf(txtPassword.getPassword())).equals(employeey.getEmployeepass())) {
             role = employeey.getEmployeeRole().trim(); // Gán vai trò
 //            System.out.println("User" + txtUserName);
 //            System.out.println("Pass" + txtPassword);
@@ -2170,10 +2293,7 @@ public class frmMain extends javax.swing.JFrame {
         lb.setBackground(Color.WHITE);
         lb.setForeground(new Color(0,153,0));
     }
-    public void CountIdOrder(){
-        
-    }
-    
+
     
     //TEST 
     
@@ -2298,7 +2418,7 @@ public class frmMain extends javax.swing.JFrame {
         String birth = year + "/" + month + "/" + day;
         String gender;
         String user = txtEmployeeUser.getText();
-        String pass = txtEmployeePass.getText();
+        String pass = String.valueOf(txtEmployeePass.getPassword());
         String role = (String) cboEmployeeRole.getSelectedItem();
         if(rbtNamNV.isSelected()){
             gender = "NAM";
@@ -2356,7 +2476,7 @@ public class frmMain extends javax.swing.JFrame {
             String birth = year + "/" + month + "/" + day;
             String gender;
             String user = txtEmployeeUser.getText();
-            String pass = txtEmployeePass.getText();
+            String pass = String.valueOf(txtEmployeePass.getPassword());
             String role = (String) cboEmployeeRole.getSelectedItem();
             if(rbtNamNV.isSelected()){
                 gender = "NAM";
@@ -2365,10 +2485,10 @@ public class frmMain extends javax.swing.JFrame {
                 gender = "NU";
             }
             if(pass.equals(employee.getEmployeepass())){
-                pass = txtEmployeePass.getText();
+                pass = String.valueOf(txtEmployeePass.getPassword());
             }
             else{
-                pass = Cipher.HashPassword(txtEmployeePass.getText());
+                pass = Cipher.HashPassword(String.valueOf(txtEmployeePass.getPassword()));
             }
             if(nvRepository.updateEmployees(new Employees(id,name,birth,gender,address,phone,hometown, user, pass, role))){
                 loadDataNhanVien();
@@ -2400,7 +2520,7 @@ public class frmMain extends javax.swing.JFrame {
             String birth = year + "/" + month + "/" + day;
             String gender;
             String user = txtEmployeeUser.getText();
-            String pass = txtEmployeePass.getText();
+            String pass = String.valueOf(txtEmployeePass.getPassword());
             String role = (String) cboEmployeeRole.getSelectedItem();
             if(rbtNamNV.isSelected()){
                 gender = "NAM";
@@ -2665,7 +2785,7 @@ public class frmMain extends javax.swing.JFrame {
     private void cbxLocSPBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxLocSPBanActionPerformed
         // TODO add your handling code here:
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tbmSanPhamDangBan);
-        tbSPB.setRowSorter(sorter);
+        tbOrder.setRowSorter(sorter);
         try {
             if(cbxLocSPBan.getSelectedIndex() == 1){
                 RowFilter<TableModel, Object> filter = RowFilter.numberFilter(RowFilter.ComparisonType.AFTER, 100000, 3);
@@ -2703,9 +2823,9 @@ public class frmMain extends javax.swing.JFrame {
         filterList1(search);
     }//GEN-LAST:event_txtSearchIDSPBKeyReleased
 
-    private void tbSPBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbSPBMouseClicked
+    private void tbOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbOrderMouseClicked
         // TODO add your handling code here:
-        int selectedRow = tbSPB.getSelectedRow();
+        int selectedRow = tbOrder.getSelectedRow();
         pnAddProductInCart pn = new pnAddProductInCart();
         pn.showDataProduct(lstSanPhamBanBoLoc.get(selectedRow), tbmorderDetail);
 //        System.out.println("TRUYEN SAN PHAM" + lstSanPhamBanBoLoc.get(selectedRow) + " VOI SO LUONG : " + lstSanPhamBanBoLoc.get(selectedRow).getQuantity());
@@ -2713,9 +2833,9 @@ public class frmMain extends javax.swing.JFrame {
         dialog.add(pn);
         dialog.setSize(450, 425);
         dialog.setVisible(true);
-        tbSPB.clearSelection();
+        tbOrder.clearSelection();
         System.out.println("Check thử số lượng cart : " + tbmorderDetail.getRowCount());
-    }//GEN-LAST:event_tbSPBMouseClicked
+    }//GEN-LAST:event_tbOrderMouseClicked
 
     private void lblGioHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblGioHangMouseClicked
         // TODO add your handling code here:
@@ -3080,6 +3200,56 @@ public class frmMain extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnNewBillActionPerformed
 
+    private void txtTimKiemDMSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimKiemDMSPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTimKiemDMSPActionPerformed
+
+    private void btnOTPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOTPActionPerformed
+        // TODO add your handling code here:
+        SendOTPEmail send = new SendOTPEmail();
+        NhanVienRepository nv = new NhanVienRepository();
+        List<Employees> lstEmployeeses = nv.getAll();
+//        for(Employees employees : lstEmployeeses){
+//            if(txtEmail.getText().trim().equals(employees.getEmployeeHometown())){
+//                send.sendOTPEmail(txtEmail.getText());
+//               JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra Email");
+//            }
+//            else{
+//                JOptionPane.showMessageDialog(this, "Không có tài khoản đã đăng ký với email này!");
+//            }
+//        }
+        send.sendOTPEmail(txtEmail.getText());
+    }//GEN-LAST:event_btnOTPActionPerformed
+
+    private void btnXacThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacThucActionPerformed
+        // TODO add your handling code here:
+        if(txtOTP.getText().trim().equals(OTP)){
+            JOptionPane.showMessageDialog(this, "Xác thực thành công");
+            lbPass.setVisible(true);
+            txtPass.setVisible(true);
+            btnOK.setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại mã OTP");
+        }
+    }//GEN-LAST:event_btnXacThucActionPerformed
+
+    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
+        // TODO add your handling code here:
+        NhanVienRepository nv = new NhanVienRepository();
+        List<Employees> lstEmployeeses = nv.getAll();
+        for(Employees employees : lstEmployeeses){
+            if(employees.getEmployeeHometown().equals(txtEmail.getText())){
+                nv.updateEmployeespass(new Employees(txtEmail.getText(), Cipher.HashPassword(String.valueOf(txtPass.getPassword()))));
+                JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công");
+            }
+        }
+    }//GEN-LAST:event_btnOKActionPerformed
+
+    private void txtPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPassActionPerformed
+
    /************************************************************/
     /**
      * @param args the command line arguments
@@ -3126,6 +3296,8 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnNewBill;
     private javax.swing.JButton btnNhapSP;
+    private javax.swing.JButton btnOK;
+    private javax.swing.JButton btnOTP;
     private javax.swing.JButton btnRESETNV;
     private javax.swing.JButton btnResetKH;
     private javax.swing.JButton btnSAVENV;
@@ -3139,6 +3311,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JButton btnTimKiemSP;
     private javax.swing.JButton btnUPDATENV;
     private javax.swing.JButton btnUpdateKH;
+    private javax.swing.JButton btnXacThuc;
     private javax.swing.JButton btnXemChiTietPhieuNhap;
     private javax.swing.JButton btnXoaDMSP;
     private javax.swing.JButton btnXoaNCC;
@@ -3157,6 +3330,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -3184,6 +3358,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JLabel lbCheckPassword;
     private javax.swing.JLabel lbCheckUserName;
     private javax.swing.JLabel lbForgotPassWord;
+    private javax.swing.JLabel lbPass;
     private javax.swing.JLabel lbSeePassword;
     private javax.swing.JLabel lblAddressKH;
     private javax.swing.JLabel lblAddressNCC;
@@ -3245,10 +3420,10 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbtNuNV;
     private javax.swing.JTable tbNCC;
     private javax.swing.JTable tbNhapKho;
+    private javax.swing.JTable tbOrder;
     private javax.swing.JTable tbQLKH;
     private javax.swing.JTable tbQLNV;
     private javax.swing.JTable tbQLSPNew;
-    private javax.swing.JTable tbSPB;
     private javax.swing.JTextField txtAddressKH;
     private javax.swing.JTextField txtAddressNCC;
     private javax.swing.JTextField txtAddressNV;
@@ -3264,6 +3439,8 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JTextField txtNameKH;
     private javax.swing.JTextField txtNameNCC;
     private javax.swing.JTextField txtNameNV;
+    private javax.swing.JTextField txtOTP;
+    private javax.swing.JPasswordField txtPass;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPhoneKH;
     private javax.swing.JTextField txtPhoneNCC;

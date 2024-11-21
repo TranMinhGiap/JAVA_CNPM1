@@ -13,7 +13,7 @@ public class Order {
     private String customID;
     private String employeeID;
     private String orderDate;
-    private float Total;
+    private double Total;
 
     public String getOrderID() {
         return orderID;
@@ -47,7 +47,7 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public float getTotal() {
+    public double getTotal() {
         return Total;
     }
 
@@ -58,7 +58,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderID, String customID, String employeeID, String orderDate, float Total) {
+    public Order(String orderID, String customID, String employeeID, String orderDate, double Total) {
         this.orderID = orderID;
         this.customID = customID;
         this.employeeID = employeeID;

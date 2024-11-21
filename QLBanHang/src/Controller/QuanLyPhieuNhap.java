@@ -19,7 +19,7 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
     public int createID() {
         int id = 0;
         String sql = "SELECT MAX(importID) AS maxID FROM Import";
-        String sqlAddID = "INSERT INTO Import(importID) VALUES (?)";
+        String sqlAddID = "INSERT INTO Import(importID, employeesName) VALUES (?, ?)";
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql);
             PreparedStatement pstmAdd = conn.prepareStatement(sqlAddID);
@@ -32,6 +32,7 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
                 id = 1;
             }
             pstmAdd.setInt(1, id+1);
+            pstmAdd.setString(2, frmMain.name_employee);
             pstmAdd.executeUpdate();
         } catch (Exception ex) {
             System.out.println("ERROR IN FUNCTION createID in QuanLyPhieuNhap: " + ex.getMessage());
@@ -67,7 +68,8 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
         /*sql Lấy dữ liệu về*/
         String sql = "SELECT importID, importDay, SUM(total) AS Total, SUM(num) AS TotalNum FROM ImportDetail GROUP BY importID, importDay";
         /*sql update khi da lay du lieu*/
-        String sqlUpdate = "UPDATE Import SET num = ?, importDay = ?, total = ? WHERE importID = ?";
+//        String sqlUpdate = "UPDATE Import SET num = ?, importDay = ?, total = ?, employeesName = ? WHERE importID = ?";
+String sqlUpdate = "UPDATE Import SET num = ?, importDay = ?, total = ? WHERE importID = ?";
         try(Connection conn = Connect.getConnection();
             /*pstm lay du lieu*/
             PreparedStatement pstm = conn.prepareStatement(sql);
@@ -84,6 +86,7 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
                 pstm1.setInt(1, sum);
                 pstm1.setString(2, importDay);
                 pstm1.setFloat(3, total);
+//                pstm1.setString(4, frmMain.name_employee);
                 pstm1.setInt(4, id);
                 if(pstm1.executeUpdate() > 0){
                     System.out.println("CẬP NHẬT DỮ LIỆU CHO BẢNG PHIẾU THÀNH CÔNG !");
@@ -105,7 +108,7 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
         {
             pstm.setInt(1, ip.getImportID());
             System.out.println("Name " + frmMain.name_employee);
-            pstm.setString(2, frmMain.name_employee);
+            pstm.setString(2, ip.getEmployeesName());
             pstm.setInt(3, ip.getNum());
             pstm.setString(4, ip.getImportDay());
             pstm.setFloat(5, ip.getTotal());
@@ -123,7 +126,8 @@ public class QuanLyPhieuNhap implements IQuanLyPhieuNhap{
         try(Connection conn = Connect.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql))
         {
-            pstm.setString(1, ip.getEmployeesName());
+//            pstm.setString(1, ip.getEmployeesName());
+            pstm.setString(1, frmMain.name_employee);
             pstm.setInt(2, ip.getNum());
             pstm.setString(3, ip.getImportDay());
             pstm.setFloat(4, ip.getTotal());

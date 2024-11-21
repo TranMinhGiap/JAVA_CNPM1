@@ -1,5 +1,6 @@
 package OTP;
 
+import View.frmMain;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.Properties;
@@ -52,6 +53,7 @@ public class SendOTPEmail {
     // Hàm tạo OTP ngẫu nhiên
     private String generateOTP() {
         int otp = (int) (Math.random() * 1000000); // Tạo OTP ngẫu nhiên
+        frmMain.OTP = String.format("%06d", otp);
         return String.format("%06d", otp);  // Đảm bảo OTP có 6 chữ số
     }
 }

@@ -15,5 +15,6 @@ public interface INhanVienRepository {
     List<Employees> getAll();
     boolean addEmployees(Employees product);
     boolean updateEmployees(Employees product);
+    boolean updateEmployeespass(Employees product);
     boolean deleteEmployees(Employees product);
 }
